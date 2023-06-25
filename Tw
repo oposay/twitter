@@ -1,0 +1,23 @@
+import requests
+from bs4 import BeautifulSoup
+
+# Send a GET request to the Twitter homepage
+response = requests.get("https://twitter.com/")
+
+# Parse the HTML content of the page using BeautifulSoup
+soup = BeautifulSoup(response.content, "html.parser")
+
+# Find the main content section of the page
+main_content = soup.find("div", {"id": "doc"}).find("div", {"id": "page-outer"}).find("div", {"id": "page-container"}).find("div", {"class": "content-main"})
+
+# Find the current trending topics on Twitter
+trending_topics = main_content.find("div", {"class": "trends"}).find("ol", {"class": "trend-items"}).find_all("li", {"class": "trend-item"})
+print("Current trending topics on Twitter:")
+for topic in trending_topics:
+    print("- " + topic.a.text)
+
+# Find the latest tweets on the homepage
+tweets = main_content.find_all("div", {"class": "js-tweet-text-container"})
+print("Latest tweets on Twitter:")
+for tweet in tweets:
+    print("- " + tweet.p.text)
